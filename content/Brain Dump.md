@@ -5,8 +5,8 @@ tags:
 - technique
 ---
 
-Topics: [Productivity](Topics/Productivity.md)  
-Reference:[Leon Hendrix - Journaled for 1000 days. What I learned.](Sources/Leon%20Hendrix%20-%20Journaled%20for%201000%20days.%20What%20I%20learned..md) | [Getting Things Done](Getting%20Things%20Done.md)  
+Topics: [[Productivity]]  
+Reference:[[Leon Hendrix - Journaled for 1000 days. What I learned.]] | [[Getting Things Done]]  
 
 ---
 

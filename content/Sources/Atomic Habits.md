@@ -5,8 +5,8 @@ tags:
 - book
 ---
 
-Author: [James Clear](Authors/James%20Clear.md)  
-Topics: [Productivity](Topics/Productivity.md)  
+Author: [[James Clear]]  
+Topics: [[Productivity]]  
 
 ---
 

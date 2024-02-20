@@ -4,4 +4,4 @@ tags:
 - author
 ---
 
-Topics: [Psychology](Topics/Psychology.md)
+Topics: [[Psychology]]

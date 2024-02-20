@@ -5,9 +5,9 @@ tags:
 - infomedia
 ---
 
-Author: [Leon Hendrix](Authors/Leon%20Hendrix.md)  
+Author: [[Leon Hendrix]]  
 Link: https://www.youtube.com/watch?v=0UhZDFK2Pwc  
-Topics: [Journaling](Topics/Journaling.md)  
+Topics: [[Journaling]]  
 
 ---
 

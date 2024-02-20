@@ -5,18 +5,18 @@ tags:
 ---
 References:  [Maggie Appleton - Brief History & Ethos of Digital Gardens](https://maggieappleton.com/garden-history)  
 [Tom Critchlow - Building digital garden](https://tomcritchlow.com/2019/02/17/building-digital-garden/)  
-Topics:  [Productivity](Topics/Productivity.md)  
+Topics:  [[Productivity]]  
 
 ---
 
 ### Intro
-Digital gardens are an alternative model for thinking about personal sites and blogs that goes against how we have come to think about them. They also support the philosophy of [Work with the garage door up](Work%20with%20the%20garage%20door%20up.md) as you are publishing your notes and thoughts online for all to see.  
+Digital gardens are an alternative model for thinking about personal sites and blogs that goes against how we have come to think about them. They also support the philosophy of [[Work with the garage door up]] as you are publishing your notes and thoughts online for all to see.  
 
 ### Continuous growth
 Digital gardens treat content not as something that is finalised and published, but something that is in an ever growing state. You are free to make additions to each page when you learn something new or make a new connection.  
 
 ### Network of concepts and ideas
-The content in digital gardens are not laid out in some sort of time based 'stream' but as an [interconnected cluster of nodes](Networked%20Thinking.md). This allows for relationships between different topics/notes to be noticed and linked which can allow for better insights to be gained.  
+The content in digital gardens are not laid out in some sort of time based 'stream' but as an [[interconnected cluster of nodes]]. This allows for relationships between different topics/notes to be noticed and linked which can allow for better insights to be gained.  
 
 ### Exploration over performance
 Digital gardens have a less performative philosophy. Each page is treated less like polished articles intended to be consumed by an audience, but more like a free form wiki of thought's an ideas that the person may note as they encounter them. You could argue that the primary audience for a digital garden is in fact the 'gardener' themselves. This idea frees the 'gardener' to not have to worry about making every sentence, every page perfect, but to focus on what they're interested in and what would benefit themselves (and perhaps other readers).  

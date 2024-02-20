@@ -5,7 +5,7 @@ tags:
 - academic
 ---
 citation:  [White Paper](https://roamresearch.com/#/app/help/page/dZ72V0Ig6)  
-Topics:  [Productivity](Topics/Productivity.md)  
+Topics:  [[Productivity]]  
 
 ---
 We are experiencing an unprecedented explosion of knowledge, yet neither the human brain nor current technologies are equipped to ==harnesess== it to its ==full potential==.

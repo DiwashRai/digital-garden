@@ -3,7 +3,7 @@ title: "Dynamic Programming"
 tags:
 - atom
 ---
-Topics: [Coding techniques](Topics/Coding%20techniques.md)  
+Topics: [[Coding techniques]]  
 Reference: LeetCode DP module  
 
 ---

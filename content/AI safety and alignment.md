@@ -3,7 +3,7 @@ title: ""
 tags:
 - MOC
 ---
-Topics: [AI](Topics/AI.md)  
+Topics: [[AI]]  
 
 ---
 

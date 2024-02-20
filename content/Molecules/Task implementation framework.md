@@ -4,8 +4,8 @@ tags:
 - molecule
 - todo
 ---
-Topics: [Productivity](Topics/Productivity.md)  
-Reference: [Brain Dump](Brain%20Dump.md) | [Activation Energy](Activation%20Energy.md)    
+Topics: [[Productivity]]  
+Reference: [[Brain Dump]] | [[Activation Energy]]  
 
 ---
 Personal productivity created from a combination of insights from various sources with some real life testing to find something that works best for me.

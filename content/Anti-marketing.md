@@ -5,7 +5,7 @@ tags:
 - infomedia
 ---
 Reference:  [Anti Marketing - Andy Matuschak](https://notes.andymatuschak.org/About_these_notes?stackedNotes=z21cgR9K3UcQ5a7yPsj2RUim3oM2TzdBByZu&stackedNotes=z4bK6LaSBRetDzuYkeCs3A8mJ8DufTbK4o6FS)  
-Topics: [Mental Models](Topics/Mental%20Models.md)  
+Topics: [[Mental Models]]  
 
 ---
 

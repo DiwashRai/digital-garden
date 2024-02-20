@@ -4,9 +4,9 @@ tags:
 - source
 - infomedia
 ---
-Author: [Dr K](Authors/Dr%20K.md)  
+Author: [[Dr K]]  
 Link: https://www.youtube.com/watch?v=BZPRX9X5V5I  
-Topics:  [Productivity](Topics/Productivity.md)  
+Topics:  [[Productivity]]  
 
 ---
 

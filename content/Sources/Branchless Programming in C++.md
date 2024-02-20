@@ -7,8 +7,8 @@ tags:
 enableToc: true
 ---
 Link:  [Branchless programming in C++ CppCon video](https://www.youtube.com/watch?v=g-WPhYREFjk)  
-Author:  [Fedor Pikus](Authors/Fedor%20Pikus.md)  
-Topics: [Software Engineering](Topics/Software%20Engineering.md)  
+Author:  [[Fedor Pikus]]  
+Topics: [[Software Engineering]]  
 
 ---
 

@@ -7,8 +7,8 @@ enableToc: true
 openTOC: true
 ---
 
-Author: [Scott Meyers](Authors/Scott%20Meyers.md)  
-Topics: [Software Engineering](Topics/Software%20Engineering.md)  
+Author: [[Scott Meyers]]  
+Topics: [[Software Engineering]]  
 
 ---
 

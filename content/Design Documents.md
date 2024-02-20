@@ -5,7 +5,7 @@ tags:
 - infomedia
 ---
 Reference:  [Design Docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/) |  [What is a design doc in software engineering?](https://www.youtube.com/watch?v=bgHL41e7vgI)  
-Topics: [Software Engineering](Topics/Software%20Engineering.md)   
+Topics: [[Software Engineering]]   
 
 ---
 ## What is a design doc?

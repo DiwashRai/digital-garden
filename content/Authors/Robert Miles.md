@@ -4,4 +4,4 @@ tags:
 - author
 ---
 
-Topics: [AI](Topics/AI.md)
+Topics: [[AI]]

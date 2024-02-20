@@ -4,7 +4,7 @@ tags:
 - atom
 - mental-model
 ---
-Topics: [Productivity](Topics/Productivity.md)  
+Topics: [[Productivity]]  
 Reference: https://en.wikipedia.org/wiki/Parkinson%27s_law  
 
 ---

@@ -3,7 +3,7 @@ title: "Disjoint Set"
 tags:
 - atom
 ---
-Topics: [Coding techniques](Topics/Coding%20techniques.md)  
+Topics: [[Coding techniques]]  
 Reference:  
 
 ---

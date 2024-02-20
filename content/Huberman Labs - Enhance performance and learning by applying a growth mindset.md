@@ -6,8 +6,8 @@ tags:
 - psychology
 ---
 Link:[YouTube link](https://www.youtube.com/watch?v=aQDOU3hPci0)  
-Author: [Andrew Huberman](Authors/Andrew%20Huberman.md)  
-Topics: [Psychology](Topics/Psychology.md), [Productivity](Topics/Productivity.md)  
+Author: [[Andrew Huberman]]  
+Topics: [[Psychology]], [[Productivity]]  
 
 ---
 
