@@ -8,7 +8,7 @@ Topics:  [[Productivity]]
 
 ---
 
-A new method of managing knowledge that is more suited to the modern information age where we have an unprecedented amount of information available. The idea is to think of each bit of knowledge as a singular node in an interconnected network of nodes instead of a more 'cabinet desk' like hierarchical strucuture for your knowledge.  
+A new method of managing knowledge that is more suited to the modern information age where we have an unprecedented amount of information available. The idea is to think of each bit of knowledge as a singular node in an interconnected network of nodes instead of a more 'cabinet desk' like hierarchical structure for your knowledge.  
 
 Benefits include:
 - Ease of storage - No need to try to categorise a new bit of knowledge perfectly so that it sits in the correct location in your hierarchy.

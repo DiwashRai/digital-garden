@@ -16,7 +16,7 @@ Digital gardens are an alternative model for thinking about personal sites and b
 Digital gardens treat content not as something that is finalised and published, but something that is in an ever growing state. You are free to make additions to each page when you learn something new or make a new connection.  
 
 ### Network of concepts and ideas
-The content in digital gardens are not laid out in some sort of time based 'stream' but as an [[interconnected cluster of nodes]]. This allows for relationships between different topics/notes to be noticed and linked which can allow for better insights to be gained.  
+The content in digital gardens are not laid out in some sort of time based 'stream' but as an [[Networked Thinking|interconnected cluster of nodes]]. This allows for relationships between different topics/notes to be noticed and linked which can allow for better insights to be gained.  
 
 ### Exploration over performance
 Digital gardens have a less performative philosophy. Each page is treated less like polished articles intended to be consumed by an audience, but more like a free form wiki of thought's an ideas that the person may note as they encounter them. You could argue that the primary audience for a digital garden is in fact the 'gardener' themselves. This idea frees the 'gardener' to not have to worry about making every sentence, every page perfect, but to focus on what they're interested in and what would benefit themselves (and perhaps other readers).  
