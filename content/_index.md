@@ -1,5 +1,8 @@
 ---
-title: "Digital Garden Home 🌱"
+id: _index
+aliases: []
+tags: []
+title: Digital Garden Home 🌱
 ---
 Welcome to my [[Digital Gardens|digital garden]] - I'm Diwash. I have been exploring personal knowledge management for a long time and this site is my experiment with doing so in a more public manner that aligns with the idea of [[Work with the garage door up]].  
 

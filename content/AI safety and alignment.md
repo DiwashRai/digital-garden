@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "AI Safety and alignment"
 tags:
 - MOC
 ---

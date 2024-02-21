@@ -1,9 +1,8 @@
 ---
-title: "Huberman Labs - Enhance performance and learning by applying a growth mindset"
+title: Huberman Labs - Enhance performance and learning by applying a growth mindset
 tags:
-- source
-- infomedia
-- psychology
+  - source
+  - infomedia
 ---
 Link:[YouTube link](https://www.youtube.com/watch?v=aQDOU3hPci0)  
 Author: [[Andrew Huberman]]  

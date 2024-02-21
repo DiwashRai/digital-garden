@@ -23,7 +23,7 @@ title: "Obsidian System"
     - event: a historical event
     - heuristic: a "common wisdom" way of doing something
 - **Workflow:**
-    -  Find interesting/useful info.
+    - Find interesting/useful info.
     - Create a source if the media has multiple useful ideas/concepts. Create an atom if only 1.
     - Atomise each useful concept.
     - Come back to atoms every now and then.
