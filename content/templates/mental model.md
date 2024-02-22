@@ -1,8 +1,8 @@
 ---
 title: ""
 tags:
-- atom
-- mental-model
+-   atom
+-   mental-model
 ---
 Reference:  
 Topics:  
