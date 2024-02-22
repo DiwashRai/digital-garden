@@ -1,7 +1,7 @@
 ---
 title: "Topological Sort"
 tags:
-- atom
+-   atom
 ---
 Topics: [[Coding techniques]]  
 Reference: LeetCode explore  

@@ -1,8 +1,8 @@
 ---
 title: "Singleton Design Pattern"
 tags:
-- atom
-- design-pattern
+-   atom
+-   design-pattern
 ---
 Reference:  
 Topics:  

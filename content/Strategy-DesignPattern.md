@@ -1,8 +1,8 @@
 ---
 title: "Strategy Design  Pattern"
 tags:
-- atom
-- design-pattern
+-   atom
+-   design-pattern
 ---
 Reference:  
 Topics:  
@@ -17,17 +17,17 @@ allows the algorithm to vary independently from the clients that use it.
 To achieve this, the algorithm is removed from the host class and placed in a separate class that
 implements a strategy interface. The algorithm can now be passed in and vary at run time.
 
-The strategy design pattern also allows closer adherence to the Open/Closed principle. The host class
-can now be extended to use a new algorithm without modifying the host class itself.
+The strategy design pattern also allows closer adherence to the Open/Closed principle. The host
+class can now be extended to use a new algorithm without modifying the host class itself.
 
 ### Implementation details
-- **Context:** This is the class that has a method that uses a strategy object to complete a task.
-it does not implement the task by itself, but takes help from the strategy object to perform the
-task.
-- **Strategy interface:** An interface common to all supported algorithms or strategies. Context uses
-this interface to call the method provided by the strategy class.
-- **Concrete strategies:** These are the classes that implement the strategy interface. They provide
-the concrete implementation of the algorithm.
+-   **Context:** This is the class that has a method that uses a strategy object to complete a task.
+    It does not implement the task by itself, but takes help from the strategy object to perform the
+    task.
+-   **Strategy interface:** An interface common to all supported algorithms or strategies. Context
+    uses this interface to call the method provided by the strategy class.
+-   **Concrete strategies:** These are the classes that implement the strategy interface. They
+    provide the concrete implementation of the algorithm.
 
 ### Code example
 

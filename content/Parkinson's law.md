@@ -1,8 +1,8 @@
 ---
 title: "Parkinson's law"
 tags:
-- atom
-- mental-model
+-   atom
+-   mental-model
 ---
 Topics: [[Productivity]]  
 Reference: https://en.wikipedia.org/wiki/Parkinson%27s_law  
@@ -16,5 +16,5 @@ Reference: https://en.wikipedia.org/wiki/Parkinson%27s_law
 Think of it as a law of physics to work around instead of as 'human
 nature'. This allows you to play with this law and push its limit for your
 own benefit:
-- Micro deadlines - aka 'Time blocking'
-- Experiment with shorter deadlines
+-   Micro deadlines - aka 'Time blocking'
+-   Experiment with shorter deadlines

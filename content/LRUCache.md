@@ -13,10 +13,10 @@ used to cache frequently used data. When full it evicts the least recently
 used data. 
 
 Costs:
-- Insertion(insert): $O(1)$
-- Retrieval(get): $O(1)$
-- Deletion(evict): $O(1)$
-- Space: $O(n)$
+-   Insertion(insert): $O(1)$
+-   Retrieval(get): $O(1)$
+-   Deletion(evict): $O(1)$
+-   Space: $O(n)$
 
 Commonly used in systems where frequently accessed data needs to be
 cached in memory for faster access such as web servers, databases, and

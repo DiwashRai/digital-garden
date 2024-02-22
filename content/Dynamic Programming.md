@@ -11,10 +11,10 @@ Reference: LeetCode DP module
 ## Intro
 Dynamic programming can systematically and efficiently explore all possible solutions to a problem.
 The wide variety of problems it can solve often have the following characteristics:
-- Problem can be broken down into =='overlapping subproblems'== - smaller versions of the original
-problem re-used multiple times.
-- The problem as an =='optimal substructure'== - an optimal solution can be formed from optimal
-solutions to the overlapping subproblems.
+-   Problem can be broken down into =='overlapping subproblems'== - smaller versions of the
+    original problem re-used multiple times.
+-   The problem as an =='optimal substructure'== - an optimal solution can be formed from optimal
+    solutions to the overlapping subproblems.
 
 ## Top-down and Bottom-up
 
@@ -40,13 +40,13 @@ all over again.
 ### Which is better?
 DP can be implemented with either method and there can be reasons for choosing one over the other.
 The main advantage for either is:
-- **Bottom up:** Runtime is usually faster as iteration does not have overhead of recursion.
-- **Top down:** Usually much easier to write. This is because the ordering of subproblems does not
-matter, whereas with tabulation, we need to go through a logical order of subproblems.
+-   **Bottom up:** Runtime is usually faster as iteration does not have overhead of recursion.
+-   **Top down:** Usually much easier to write. This is because the ordering of subproblems does
+    not matter, whereas with tabulation, we need to go through a logical order of subproblems.
 
 ## Framework
 To solve a DP problem, 3 things are necessary:
-1. A function or data structure that will compute/contain the answer to the problem for every
-given state.
-2. A recurrence relation to transition between states.
-3. Base cases so our recurrence relation does not go on infinitely.
+1.  A function or data structure that will compute/contain the answer to the problem for every
+    given state.
+2.  A recurrence relation to transition between states.
+3.  Base cases so our recurrence relation does not go on infinitely.

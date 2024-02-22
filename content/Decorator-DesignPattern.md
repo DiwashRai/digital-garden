@@ -17,14 +17,14 @@ Decorator classes have the same interface as the components they decorate.
 
 ### Implementation details
 The decorator pattern works as follows:
-- You start with the basic object. This is the lowest level and will have extra functionality
-layered onto it.
-- You create another object with a reference to the first object. This second object will decorate
-the basic object i.e. it 'wraps' the original object.
-- The decorator object will mirror the type of the original object, but will add or override
-behaviour.
-- You can now layer on additional decorators, each one referencing the previous layer. This allows
-features to be built up incrementally, at runtime.
+-   You start with the basic object. This is the lowest level and will have extra functionality
+    layered onto it.
+-   You create another object with a reference to the first object. This second object will decorate
+    the basic object i.e. it 'wraps' the original object.
+-   The decorator object will mirror the type of the original object, but will add or override
+    behaviour.
+-   You can now layer on additional decorators, each one referencing the previous layer. This allows
+    features to be built up incrementally, at runtime.
 
 ### Code example
 **Define abstract base class(interface) `Coffee`**

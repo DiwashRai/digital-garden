@@ -1,7 +1,7 @@
 ---
 title: "Ring Buffer"
 tags:
-- atom
+-   atom
 ---
 Reference:  
 Topics: [[Software Engineering]]  
@@ -16,16 +16,16 @@ where data needs to be continuously processed and output without delay.
 Also used in network protocols to mange transfer between devices.
 
 Cost:
-- Insertion: $O(1)$
-- Retrieval: $O(1)$
-- Space: $O(n)$
+-   Insertion: $O(1)$
+-   Retrieval: $O(1)$
+-   Space: $O(n)$
 
 Basic interface operations:
-- `push()`
-- `pop()`
-- `front()`
-- `back()`
-- `size()`
-- `capacity()`
+-   `push()`
+-   `pop()`
+-   `front()`
+-   `back()`
+-   `size()`
+-   `capacity()`
 
 ![ringbuffer](attachments/ringbuffer.png)

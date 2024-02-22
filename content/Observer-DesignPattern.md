@@ -19,13 +19,13 @@ relationship between objects.
 
 ### Implementation details
 The observer design pattern works as follows:
-- Start with a subject object whose state changes should be tracked and notified.
-- Create observer objects that will be notified when the state of the subject changes.
-- Attach the observers to the subject. The subject will maintain a list of all attached observers.
-- When the state of the subject changes, it notifies all attached observers by calling their
-update method.
-- Observers use these updates to synchronise their state with the state of the object, thus
-maintaining consistency.
+-   Start with a subject object whose state changes should be tracked and notified.
+-   Create observer objects that will be notified when the state of the subject changes.
+-   Attach the observers to the subject. The subject will maintain a list of all attached observers.
+-   When the state of the subject changes, it notifies all attached observers by calling their
+    update method.
+-   Observers use these updates to synchronise their state with the state of the object, thus
+    maintaining consistency.
 
 ### Code example
 **Observer and Subject interfaces**

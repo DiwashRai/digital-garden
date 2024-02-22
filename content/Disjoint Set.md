@@ -14,19 +14,19 @@ two vertices are connected efficiently. It is also known as the ==union-find== d
 might also be referred to as an algorithm.
 
 ### Terminology
-- Parent node: The direct parent of a node.
-- Root node: A node without a parent i.e. when a node is it's own parent.
+-   Parent node: The direct parent of a node.
+-   Root node: A node without a parent i.e. when a node is it's own parent.
 
 ### Implementing a disjoint set
-- The ==find== function: Finds the root node of a given vertex.
-- The ==union== function: Unions/merges two vertices and makes their root nodes the same.
-- Array of root nodes.
+-   The ==find== function: Finds the root node of a given vertex.
+-   The ==union== function: Unions/merges two vertices and makes their root nodes the same.
+-   Array of root nodes.
 
 ### Two alternative ways to implement a disjoint set
-- **Implementation with Quick Find**: The time complexity of ==find== will be O(1), but the ==union==
-function will take more time with O(N).
-- **Implementation with Quick Union**: Compared to quick find, the complexity of ==union== is better
-but the ==find== function will take longer.
+-   **Implementation with Quick Find**: The time complexity of ==find== will be O(1), but the
+    ==union== function will take more time with O(N).
+-   **Implementation with Quick Union**: Compared to quick find, the complexity of ==union== is
+    better but the ==find== function will take longer.
 
 # Quick Find - Disjoint Set
 
@@ -71,13 +71,13 @@ private:
 ```
 
 ## Time complexity
-- Union-find constructor: O(N)
-- Find: O(1)
-- Union: O(N)
-- Connected: O(1)
+-   Union-find constructor: O(N)
+-   Find: O(1)
+-   Union: O(N)
+-   Connected: O(1)
 
 ## Space complexity
-- O(N) for the array.
+-   O(N) for the array.
 
 # Quick Union - Disjoint Set
 The main difference is that the array of root nodes will no longer be kept 'flat'. In fact,
@@ -123,10 +123,10 @@ private:
 ```
 
 ## Time complexity
-- Constructor: O(N)
-- Find: O(N)
-- Union: O(N)
-- Connected: O(N)
+-   Constructor: O(N)
+-   Find: O(N)
+-   Union: O(N)
+-   Connected: O(N)
 
 ## Quick Find vs Quick Union
 In general the Quick Union implementation is more efficient. This might be surprising as the
@@ -193,10 +193,10 @@ private:
 ```
 
 ## Time complexity
-- Constructor: O(N)
-- Find: O(logN)
-- Union: O(logN)
-- Connected: O(logN)
+-   Constructor: O(N)
+-   Find: O(logN)
+-   Union: O(logN)
+-   Connected: O(logN)
 
 
 # Path compression optimisation - Disjoint Set
@@ -239,10 +239,10 @@ private:
 ```
 
 ## Time complexity
-- Constructor: O(N)
-- Find: O(logN)
-- Union: O(logN)
-- Connected: O(logN)
+-   Constructor: O(N)
+-   Find: O(logN)
+-   Union: O(logN)
+-   Connected: O(logN)
 
 # Path compression + Union by rank sample implementation
 ```cpp
