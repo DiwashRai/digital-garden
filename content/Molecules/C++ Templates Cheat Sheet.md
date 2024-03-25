@@ -137,3 +137,80 @@ RT* address_of(T& value)
     -   A1: Instantiation
     -   A2: Explicit spcialization
 
+**Definitions**
+-   Template Instantiation: process when the compiler substitutes template arguments for template
+    parameters in order to ==define== an entity.
+    -   Results in the generation of a specialization of a template
+-   Spcializations are often referred to informally as an 'instantiated class' (or instantiated
+    function etc).
+-   Then the term evolved such that specializations are also known as 'instantiations'.
+
+> [!tip] Brief
+>   -   Template instantiation is the process or act(verb).
+>   -   Specialization is the result of the process
+>   -   Specialization is also referred to as 'instantiations' or 'instantiated class' etc.
+
+
+**Implicit Instantiation**  
+-   Is what you usually use. Occurs when the compiler sees the name of a template alongside concrete
+    parameters (specialization). The compiler will then try to generate the specialization.
+-   Also known as **on-demand**, or **automatic** instantiation.
+-   Compiler will decide where, when, and how much of a specialization to create.
+    -   For class templates, ==implicit== instantiation does not always generate all members of the
+        class.
+
+**Explicit Instantiation**  
+Looks like this:
+```cpp
+//- Source file e.g. MyFoo.cpp
+template class vector<foo>;                     //- definition
+template class vector<foo, my_allocator<foo>>;  //- definition
+
+template void swap<foo>(foo&, foo&);            //- definition
+template void swap(bar&, bar&);                 //- definiiton
+```
+
+-   Explicit instantiation of a class template instantiates **all** members.
+-   But, you can also choose to instantiate individual member functions.
+
+```cpp
+template void vector<foo, my_allocator<foo>>::push_back(foo const&); //- definition
+```
+
+-   However, explicit instantiation can result in the one definition rule being violated. To
+    deal with this when you explicitly instantiate a template you can do the following:
+
+```cpp
+//- Header file e.g. MyFoo.h
+extern template class vector<foo>;                      //- Declared, not defined
+extern template class vector<foo, my_allocator<foo>>;   //- Declared, not defined
+
+extern template void swap<foo>(foo&, foo&);             //- Declared, not defined
+extern template void swap(bar&, bar&);                  //- Declared, not defined
+```
+
+> [!example] Usecase
+>   -   Compiling expensive templates upfront to avoid paying the cost per translation unit
+>   -   Instantiating and putting templates into a DLL without users having to instantiate
+>       the templates themselves as well.
+
+**Explicit specialization**  
+-   What if you want to specify a behaviour for specific situations. e.g.
+
+```cpp
+// primary template
+template<class T>
+T const& min(T const& a, T const& b)
+{
+    return (a < b) ? a : b;
+}
+
+// Full specialization with all the parameters filled in.
+// Valid ONLY if function primary template has already been defined.
+template<>
+char const* min(char const* pa, char const* pb)
+{
+    return (strcmp(pa, pb) < 0) ? pa : pb;
+}
+```
+
