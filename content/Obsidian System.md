@@ -1,5 +1,7 @@
 ---
 title: "Obsidian System"
+tags:
+- atom
 ---
 
 -   **Core types:**

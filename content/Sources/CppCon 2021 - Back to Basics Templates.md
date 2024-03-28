@@ -1,28 +1,27 @@
 ---
-title: "C++ Templates"
+title: "Back to Basics: Templates in C++"
 tags:
--   molecule
+-   source
+-   infomedia
+-   cppcon
 ---
+
+Link:
+-   [Back to Basics: Templates in C++ Part 1](https://www.youtube.com/watch?v=XN319NYEOcE)
+-   [Back to Basics: Templates in C++ Part 2](https://www.youtube.com/watch?v=2Y9XbltAfXs)
+
+Author: [[Bob Steagall]]  
 Topics: [[Software Engineering]]  
-Reference:  
-- [[C++ Templates - The Complete Guide(2nd edition)]]
-- CppCon 2021 - Back to Basics: Templates
 
 ---
 
 ## Template categories
-
-### Function Templates (C++98/03)
-
-### Class Templates (C++98/03)
-
-### Member Function Templates (C++98/03)
-
-### Alias Templates (C++11)
-
-### Variable Templates (C++14)
-
-### Lambda Templates (C++20)
+-   Function Templates (C++98/03)
+-   Class Templates (C++98/03)
+-   Member Function Templates (C++98/03)
+-   Alias Templates (C++11)
+-   Variable Templates (C++14)
+-   Lambda Templates (C++20)
 
 ## Template Fundamentals
 
@@ -214,3 +213,155 @@ char const* min(char const* pa, char const* pb)
 }
 ```
 
+### Value categories
+
+-   Every C++ expression has an associated _type_ and belonges to a _value category_.
+-   The standard classifies all expressions into one of 5 value categories:
+    -   Two are _composite_ categories. _glvalue_ and _rvalue_.
+    -   Three are _core_ categories. _lvalue_, _xvalue_, and _prvalue_.
+
+
+-   _glvalue_: Informally stands for 'generalised' lvalue.
+    -   Has storage
+    -   Has a name
+    -   Has an address that can be taken(some exceptions)
+    -   Non-const glvalues can be assigned to(also some different exceptions)
+-   _rvalue_: An expression that is either a prvalue or xvalue. It is a set of both of those.
+
+
+-   _prvalue_: Informally stands for 'pure' rvalue.
+    -   When the compiler is evaluating operations it frequently creates temporary objects which are
+        these prvalues.
+    -   Has no name
+    -   Has no storage*
+-   _xvalue_: Informally stands for 'expiring' value.
+    -   Usually denotes a _glvalue whos value will no longer matter_. e.g. By using std::move
+-   _lvalue_: a glvalue that is not an xvalue.
+
+> [!tip] Brief
+>   -   **lvalue** examples:
+>       -   Expressions that designate variables or funcitons.
+>       -   Class data members.
+>       -   A call to a function that returns an lvalue reference
+>   -   **prvalue** examples:
+>       -   Literals like enumerations, integer constants, floating point constants.
+>       -   Application of built-in arithmetic operators.
+>       -   A call to a function with a non-reference return type.
+>   -   **xvalues** examples:
+>       -   A cast to an rvalue reference to an object type. i.e. std::move
+>       -   A call to a function that returns an rvalue reference to an object type.
+>           -   i.e. Returning a reference to an object that can be moved from
+>   -   Compositive types:
+>       -   _glvalue_: lvalue and xvalue.
+>       -   _rvalue_: prvalue and xvalue.
+
+### Template argument deduction
+
+Here is a commonly use function:
+
+```cpp
+template<class T>
+T const& min(T const& a, T const& b)
+{
+    return (b < a) ? b : a;
+}
+string s0 = "foo";
+string s0 = "bar";
+string s2 = min<string>(s0, s1); // Explicitly specifying template argument
+string s3 = min(s0, s1);         // Template argument is deduced as a string
+
+```
+What if the template argument is ambiguous? We can help the compiler by being explicit.
+
+```cpp
+int i = 42;
+double d = 3.14;
+auto x = min(i, d);         // Error. Ambiguity. Is T int or double.
+auto y = min<double>(i, s); // OK. Force T to be double.
+
+```
+
+If we do not explicitly tell the compiler what type the template parameter is, we enter
+==type inference==.
+
+**Type Inference**
+-   Possible _PatameterType_ forms.
+    1.  T
+    2.  T*
+    3.  T const*
+    4.  T&
+    5.  T const&
+    6.  T&&
+    7.  T const&&
+-   Possible _expression_ types
+    1.  int
+    2.  int const
+    3.  int*
+    4.  int const*
+    5.  int&
+    6.  int const&
+    7.  int&&
+    8.  int const&&
+
+So the question is, how does the compiler resolve an expression type depending on the template
+parameter type encountered? It uses reference collapsing.
+-   & + & -> &
+-   & + && -> &
+-   && + & -> &
+-   && + && -> &
+
+Can think of it as using the least number of '&' characters.
+
+![[template argument deduction matrix.png]]
+
+Here is a practical example.
+
+```cpp
+using RI = int&;
+
+int         x = 42;
+RI         rx = x;  // rx is int&
+RI const& rrx = rx; // "int& const&", drop outer const, & + & -> &, rrx is int&
+
+using RCI = int const&;
+RCI&&     rcx = x;  // "int const& const&&", no outer cv-qualifier, & + && -> &
+                    // rcx is int const&
+
+using RRI = int&&;
+RRI const&& rrcx = x;   // "int&& const&&", drop outer const, && + && -> &&
+                        // rrcx is int&& 
+```
+
+You can notice that T&& should pretty much deduce to whatever the expression type is. However, it
+has special rules for 'int const&&' and 'int&&'. This is to solve the ==perfect forwarding problem==.
+
+For these two cases the '&' gets stripped off and the bare type is deduced. **This change to one
+type of template parameter is what allows perfect forwarding**. We can use std::forward with the
+correct template parameter type(T&&) and have it perfectly forward through any chain of function
+calls and maintain 'prvalue', 'xvalue' or 'lvalue'.
+
+### Return type deduction
+
+```cpp
+// can only compare same types
+template<class T>
+T min(T a, T b)
+{
+    return (b < a) ? b : a;
+}
+
+// auto can be used to let the compiler determine the return type
+template<class T1, class T2>
+auto min(T a, T b)
+{
+    return (b < a) ? b : a;
+}
+
+// std::common_type_t checks if there is a type that is capable of representing both T1 and T2
+// and returns that
+template<class T1, class T2>
+std::common_type_t<T1, T2> min(T a, T b)
+{
+    return (b < a) ? b : a;
+}
+```

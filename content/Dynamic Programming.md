@@ -28,7 +28,7 @@ Top-down is implemented with recursively and made efficient with memoization. If
 the nth fibonacci number, we try to find this by finding F(n - 1) and F(n - 2). This defines a
 recursive pattern until we reach the base case which is `F(0) = F(1) = 1`.
 
-![](Pasted%20image%2020230730134659.png)
+![](memoization%20tree.png)
 
 The recursive tree shows that F(2) would have to be calculated 3 times even if we're calculating
 a small fibonacci number. To reduce the repeated computation we ==memoize== the results.
