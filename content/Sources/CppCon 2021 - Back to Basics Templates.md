@@ -345,8 +345,8 @@ calls and maintain 'prvalue', 'xvalue' or 'lvalue'.
 >       necessary to avoid ambiguity.
 >   -   If we do not specify explicity, _type inference_ takes place. _Expression types_ have to be
 >       resolved to a _parameter type_.
->   -   Reference collapsing happens. Typically we use the least number of '&'. See matrix for more
->       details.
+>   -   _Reference collapsing_ can happen during type inference. Typically we use the least number
+>       of '&'. See matrix for more details.
 >   -   The special rules for parameter type _T&&_ allows _perfect forwarding_ to take place.
 
 ### Return type deduction
