@@ -240,7 +240,7 @@ char const* min(char const* pa, char const* pb)
 
 > [!tip] Brief
 >   -   **lvalue** examples:
->       -   Expressions that designate variables or funcitons.
+>       -   Expressions that designate variables or functions.
 >       -   Class data members.
 >       -   A call to a function that returns an lvalue reference
 >   -   **prvalue** examples:
@@ -340,6 +340,15 @@ type of template parameter is what allows perfect forwarding**. We can use std::
 correct template parameter type(T&&) and have it perfectly forward through any chain of function
 calls and maintain 'prvalue', 'xvalue' or 'lvalue'.
 
+> [!tip] Brief
+>   -   You can explicitly specify a template argument e.g. `min<double>(42, 3.14);`. This may be
+>       necessary to avoid ambiguity.
+>   -   If we do not specify explicity, _type inference_ takes place. _Expression types_ have to be
+>       resolved to a _parameter type_.
+>   -   Reference collapsing happens. Typically we use the least number of '&'. See matrix for more
+>       details.
+>   -   The special rules for parameter type _T&&_ allows _perfect forwarding_ to take place.
+
 ### Return type deduction
 
 ```cpp
@@ -365,3 +374,296 @@ std::common_type_t<T1, T2> min(T a, T b)
     return (b < a) ? b : a;
 }
 ```
+
+> [!tip] Brief
+>   -   You can use auto for function templtaes to determine return type.
+>   -   Another alternative is to use `std::common_type_t`.
+
+### Class Templates - More Detail
+
+**Stack example**
+
+-   Where is the scope of the template parameter active?
+```cpp
+template<class T> // Scope starts when T is named
+class Stack
+{
+    vector<T> m_data;
+
+public:
+    bool is_empty() const;
+    void pop();
+    void push(T const& t);
+}; // an ends here
+
+
+template<class T> // From here when T is introduced
+void Stack<T>::push(T const& t)
+{
+    m_data.push_back(t);
+} // and ends here
+```
+
+-   Do you have to use `Stack<T>` if you refer to the class itself?
+    -   Not if you are in class scope. Therefore, most people omit it as it is visual noise.
+
+```cpp
+template<class T>
+class Stack
+{
+    vector<T> m_data;
+
+public:
+    bool is_empty() const;
+    void pop();
+    void push(T const& t);
+    Stack push_all_from(Stack const& other); // Don't need Stack<T> in class scope
+};
+
+```
+
+-   Now what if you define the function outside of the class?
+-   Class scope only begins after the `::` so the first `Stack<T>` is required but not in the
+    function parameter list.
+
+```cpp
+template<class T>
+Stack<T>::push_all_from(Stack const& other)
+{
+    Stack tmp(*this);
+    m_data.insert(m_data.end(), other.m_data.cbegin(), other.m_data.cend());
+    return tmp;
+}
+```
+
+-   Now lets say we want a `begin()` and `end()` function that returns a `const_iterator`. We can
+    just reuse the reverse iterator provided by `std::vector`.
+-   We can use a `using` to type alias it however, we also need to use the keyword `typename` to
+    tell the compiler that it is indeed a type.
+-   This is required whenever you have a dependent name - something that is dependent on one or
+    more template parameters.
+
+```cpp
+template<class T>
+class Stack
+{
+    vector<T> m_data;
+
+public:
+    // typename required since `vector<T>` is dependent on T
+    using const_iterator = typename vector<T>::const_reverse_iterator;
+
+    const_iterator begin() const;
+    const_iterator end() const;
+
+    bool is_empty() const;
+
+    void pop();
+    void push(T const& t);
+    Stack push_all_from(Stack const& other); // Don't need Stack<T> in class scope
+};
+```
+-   You also need to do this for things outside of class scope
+
+```cpp
+template<class T> typename Stack<T>::const_iterator
+Stack<T>::begin() const
+{
+    return m_data.crbegin();
+}
+
+// or a cleaner way to do the same thing
+template<class T> auto
+Stack<T>::begin() const -> const_iterator // don't need typename as we are now in class scope
+{
+    return m_data.crbegin();
+}
+```
+
+-   How do we define static data members(after C++17)?
+
+```cpp
+template<class T>
+class Stack
+{
+    vector<T> m_data;
+    inline static int m_count = 0; // after C++17 we can use the inline keyword
+    ...
+}
+```
+
+_Full Specialization_
+
+```cpp
+template<>
+class Stack<int>
+{
+    vector<int> m_data;
+
+public:
+    bool is_empty() const;
+    int top() const;
+
+    void pop();
+    void push(int t);
+    void (push_from(string const& s);
+};
+
+void
+Stack<int>::push_from(string const& s)
+{
+    m_data.insert(m_data.end(), s.begin(), s.end());
+}
+```
+
+_Partial specialization_
+-   What if we want to customize behaviour for pointers specifically?
+
+```cpp
+template <class T> // Still need template parameters
+class Stack<T*>    // But then need to specify this stack is for pointers
+{
+    vector<T*> m_data;
+    ...
+    T* pop(); // returns the pointer not void so it object can be deleted.
+    ...
+};
+
+template<class T> // template declaration still required
+T*
+Stack<T*>::pop()
+{
+    T* tmp = m_data.back();
+    m_data.pop_back();
+    return tmp;
+}
+```
+-   Partial specialization can be used to normalize internal representation if the user is using
+    a mix of references and non reference types.
+
+```cpp
+template<class T, class U>
+struct Pair
+{
+    T first;
+    U second;
+    Pair(T const& t, U const& u) {...};
+};
+
+// now partially specialise for different cases
+template<class T, class U>
+struct Pair<T&, U>
+{
+    T first; // internal representation is the same for all cases
+    U second;
+    Pair(T const& t, U const& u) {...};
+};
+
+// same if U is a ref
+template<class T, class U>
+struct Pair<T, U&>
+{
+    T first;
+    U second; // internal representation is the same for all cases
+    Pair(T const& t, U const& u) {...};
+};
+```
+
+> [!tip] Brief
+>   -   You do not need to specify the `<T>` when referring to the class within the class scope
+>       itself.
+>   -   For member function defined outside of the class, class scope begins after the `::`. This
+>       means that you will need the `<T>` before that(e.g. for return type) but not after
+>       that(e.g. in the function parameter list).
+>   -   If you use `using` to introduce a _type alias_ that has a _dependent name_(relies one or
+>       more template parameters T), then you need the `typename` keyword to let the compiler know
+>       that it is a type.
+>   -   Typename will also be required for definitions outside of the class scope but can be
+>       quite elegantly avoided with `auto` and `-> return type` syntax.
+>   -   Since C++17 you can define static variables in the class body with `inline`.
+>   -   Class templates can be fully specialized with a similar syntax to function templates.
+>   -   Member functions defined outside don't need the `template<class T>` in this case.
+>   -   You can partially specialize class templates. For example `T*` for a class template that
+>       takes in `T` to handle pointers in a specific way.
+>   -   Partial specialization can be used in many ways such as to normalize internal types if
+>       the passed Type varies (e.g. mix of reference and non reference types).
+
+What else can we do with the power of _partial specialization_?
+
+### Type Traits
+
+```cpp
+template<class T>
+struct IsPointer
+{
+    static constexpr bool value = false; // false for the general case
+}
+
+template<class T>
+struct IsPointer<T*>
+{
+    static constexpr bool value = true; // True when T is actually a T*
+}
+
+// Now we can create a template type alias
+template<class T>
+inline constexpr
+bool IsPointer_V = IsPointer<T>::value;
+```
+
+-   Now we can do some template magic. The other branch is not even generated with an
+    `if constexpr`.
+
+```cpp
+template<class T>
+void foo(T t)
+{
+    if constexpr (IsPointer_V)
+        // do one thing
+    else
+        // do something else
+    ...
+}
+```
+
+-   We can also use partial specialization to normalize properties of types.
+    -   i.e. remove constness or volatile etc.
+
+```cpp
+template<class T>
+struct RemoveCV
+{
+    using Type = T;
+}
+
+// partially specialize for cases where T has const or volatile or both and just return T as Type
+template<class T>
+struct RemoveCV<T const>
+{
+    using Type = T;
+}
+
+template<class T>
+struct RemoveCV<T volatile>
+{
+    using Type = T;
+}
+
+template<class T>
+struct RemoveCV<T const volatile>
+{
+    using Type = T;
+}
+
+template<class T>
+using RemoveCV_T = typename RemoveCV<T>::type;
+```
+
+-   This use of traits can be used to improve templated code. If you do not trust your users, you
+    can normalize the type parameters that are passed.
+
+> [!tip] Brief
+>   -   Can be use to detect properties such as if a type is a pointer.
+>   -   Can also be used to detect and normalize properties of a type. i.e. Can remove constness,
+>       volatile etc.
+
