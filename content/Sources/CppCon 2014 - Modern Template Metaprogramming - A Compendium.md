@@ -166,7 +166,7 @@ struct IF : type_is<...> { }; // p ? T : F
 ### Implementing IF
 
 ```cpp
-// primary tempalte assumes the bool value is true
+// primary template assumes the bool value is true
 template<bool, class T, class > // needn't name unused params
 struct IF : type_is<T> {};
 
@@ -181,7 +181,7 @@ struct IF<false, T, F> : type_is<F> {};
 
 -   "if _true_, use the given type; if _false_, use no type at all":
 ```cpp
-// primary tempalte assumes the bool value is true
+// primary template assumes the bool value is true
 template<bool, class T = void> // default is useful, not essential
 struct enable_if : type_is<T> {};
 
@@ -276,4 +276,149 @@ using bool_constant = integral_constant<bool, b>;
 ```cpp
 using true_type = bool_constant<true>;
 using false_type = bool_constant<false>;
+```
+
+## Using inheritance and specialization together
+-   Example 1: `is_void`
+```cpp
+// primary template for non-void types
+template<class T> struct is_void : false_type {};
+
+// specializations recognize each of the four void types:
+template<> struct is_void<void> : true_type {};
+template<> struct is_void<void const> : true_type {};
+...
+```
+
+-   Example 2: `is_same`
+```cpp
+// primary template for distinct types
+template<class T, class U> struct is_same : false_type {};
+
+// specialization recongnizes identical type
+template<class T> struct is_same<T, T> : true_type {};
+```
+
+## Forwarding/delegating to other metafunctions
+
+-   Given a type, is it a void type? (`is_void` but different implementation)
+```cpp
+template<class T>
+using is_void = is_same<remove_cv_t<T>, void>;
+
+// where remove_cv is simply
+template<class T>
+using remove_cv = remove_volatile<remove_const_t<T>>;
+```
+
+## Using parameter pack in a metafunction
+-   Example: generalize `is_same` into `is_one_of`
+```cpp
+// primary template: is T the same as any of the types P0toN...?
+template<class T, class... P0toN>
+struct is_one_of; // declare interface only
+
+// base #1: specialization recognizes empty list of types
+template<class T>
+struct is_one_of<T> : false_type {};
+
+// base #2: Specialization recongizes match at head of list of types
+template<class T, class... P1toN>
+struct is_one_of<T, T, P1toN...> : true_type {};
+
+// specialization recognizes a mismatch at head of list of types
+template<class T, class P0, class... P1toN>
+struct is_one_of<T, P0, P1toN...> : is_one_of<T, P1toN...> {};
+```
+
+-   Example: redoing `is_void` with parameter packs
+```cpp
+template<class T>
+using is_void = is_one_of<T, void, void const, void volatile, void const volatile>;
+```
+
+## Unevaluated operands
+-   Recall that operands of `sizeof`, `typeid`, `decltype` and `noexcept` are _never_ evaluated,
+    not even at compile time:
+    -   Implies that no code is generateed for such operand expressions and...
+    -   Implies that we need only a declaration, not a definition, to use a (function's or object's)
+        name in these contexts.
+-   An unevaluated function call (e.g. to `foo`) can usefully map one type to another:
+    -   `decltype(foo(declval<T>()))`
+        -   Give's foo's return type, were it called with a T rvalue
+    -   The unevaluated call `std::declval<T>()` is declared to give an rvalue result of type T.
+        -   (`std::declval<T&>()` gives lvalue)
+
+### Example: is_copy_assignable
+```cpp
+template<class T>
+struct is_copy_assignable {
+private:
+    template<class U, class = decltype(declval<U&>() = declval<U const&>())>
+    static true_type try_assignment(U&&);
+
+    static false_type try_assignment(...);
+
+public:
+    using type = decltype( try_assignment(declval<T>()));
+}
+```
+-   Key concepts to understanding how this works:
+    -   `try_assignment` is a function within the is_copy_assignable struct that is called to
+        generate the return `type` for the metafunction.
+    -   `try_assignment` does not need a body, only a declaration as code is not actually being
+        called at runtime.
+    -   `U&&` is utilised not for perfect forwarding, but to ensure the try_assignment function
+        accepts any type (const U, U, U&...);
+
+## Type trait void_t
+```cpp
+template<class...>
+using void_t = void;
+```
+-   Whatever you give it, it returns `void`. Can give it any number of types.
+-   What's the point?
+-   Acts as a metafunction that maps any ==well-formed== type(s) into the(predictable!) type void.
+-   Could think of it as a `is_well_formed` metafunction that returns a _predictable_ type.
+-   Example: detect the presence/absence of a type member
+```cpp
+// primary template
+template<class, class = void> // second parameter default to void is crucial
+struct has_type_member : false_type {};
+
+// partial specialization:
+template<class T>
+struct has_type_member<T, void_t<typename T::type>> : true_type {};
+```
+**Breakdown**
+-   Called via `has_type_member<T>::value` or equivalent
+-   When T _does_ have a type member named _type_:
+    -   The partial specialization is well formed, `void_t` returns void and the specialization
+        inheriting from `true_type` is selected.
+    -   If the `typename T::type` is not well formed, **SFINAE**, so the primary template has to
+        be used.
+
+### Lets revisit is_copy_assignable with our new tools
+
+```cpp
+// helper alias for the result type of a valid copy assignment
+template<class T>
+using copy_assignment_t = decltype( declval<T&>() = declval<T const&>());
+
+// primary template handles all the non-copy assignable types:
+template<class T, class = void> // default arg essential
+struct is_copy_assignable : false_type {};
+
+// specialization recognizes and validates only copy-assignable types:
+template<class T>
+struct is_copy_assignable<T, void_t<copy_assignment_t<T> >
+: is_same<copy_assignment_t<T>, T&> {};
+```
+
+-   Want `is_move_assignable`? Change `T const&` -> `T&&`
+
+```cpp
+// helper alias for the result type of a valid copy assignment
+template<class T>
+using move_assignment_t = decltype( declval<T&>() = declval<T&&>());
 ```
