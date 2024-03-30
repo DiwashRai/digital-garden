@@ -152,6 +152,128 @@ template<class T>
 struct remove_volatile<U volatile> : type_is<U> {};
 ```
 
-## Compile time decision making - Example: enable_if
+## Compile time decision making - Example: IF/IF_t
+
+-   Imagine a metafunction, IF/IF_T to select one of two types:
+```cpp
+template<bool p, class T, class F>
+struct IF : type_is<...> { }; // p ? T : F
+```
+-   Something like this would let us write _self-configuring code_:
+    -   Assume: `int ocnst q = ...; // user's configuration parameter`
+    -   `IF_t<(q<0), int, unsigned> k; // k is int if less than 0, otherwise unsigned`
+
+### Implementing IF
+
+```cpp
+// primary tempalte assumes the bool value is true
+template<bool, class T, class > // needn't name unused params
+struct IF : type_is<T> {};
+
+// partial specialization recognizes a false value
+template<bool, class T, class U>
+struct IF<false, T, F> : type_is<F> {};
+```
+
+-   IF is called `conditional` in the `stl`.
+
+### Implementing a single-type variation on conditional
+
+-   "if _true_, use the given type; if _false_, use no type at all":
+```cpp
+// primary tempalte assumes the bool value is true
+template<bool, class T = void> // default is useful, not essential
+struct enable_if : type_is<T> {};
+
+// partial specialization recognizes a false value, computing nothing:
+template<class T>
+struct enable_if<false, T> {}; // no member named type!
+```
+
+-   Why is this useful? Let's consider a meta-call `enable_if<false, ...>::type`
+    -   Always an error?
+    -   Nope. Only sometimes. Welcome to **SFINAE**
 
 
+## SFINAE applies during implicit template instantiation
+SFINAE: Substitution Failure Is Not An Error.
+
+During template instantiation, the compiler will:
+1.  Obtain (or figure out) the template arguments:
+    -   Taken verbatim if explicitly supplied.
+    -   Else _deduced_ from function arguments at point of call.
+    -   Else taken form the declartion's _default template arguments_
+2.  Replace each template parameter, throughout the template, but it's corresponding template
+    argument. _Substituion_.
+    -   If these steps produce well-formed code, the instantiation succeeds.
+    -   BUT if the resulting code is ill-formed, it is considered not _viable_ (due to
+        _substitution failure_) and is _silently discarded_.
+
+### SFINAE in use
+
+-   Example: Want one algorithm `f` taking integral types T, and overload it with a second `f`
+    taking floating-point types T.
+```cpp
+template<class T>
+enable_if_t<is_integral<T>::value, maxint_t>
+f(T val) { ... };
+
+template<class T>
+enable_if_t<is_floating_point<T>::value, long double>
+f(T val) { ... };
+```
+-   Only one can be viable at a time. If neither is viable, the compiler will generate an error.
+-   For a quick taste of concepts, the above templates could be written like so:
+```cpp
+template<Integral T> // constrained template (short form)
+maxint_t
+f(T val) { ... };
+```
+-   This allows you to avoid the `enable_if_t` shenanigans and also allows clearer compiler
+    messages.
+
+## Metafunction convention 2
+-   A metafunction with a _value result_ has:
+    -   A `static constexpr` member, _value_, giving it's result, and...
+    -   A few convenience member types and `constexpr` functions.
+-   Canonical value-returning metafunction (equivalent to `type_is`):
+```cpp
+template<class T, T v>
+struct integral_constant {
+    static constexpr T v;
+    constexpr   operator T() const noexcept { return value; }
+    constexpr T operator()() const noexcept { return value; }
+    ... // remaining members are only occasionally useful
+}
+```
+-   Inheriting from `integral_constant` provides more options for meta-call syntax.
+
+### Revised rank metafunction
+-   Example: obtain the (compile-time) rank of an array type:
+```cpp
+// primary template handles scalar (non-array) types as base case
+template<class T>
+struct rank : integral_constant<size_t, 0u> { };
+
+// partial specialization that handles unboudned arrays
+template<class U, size_t N>
+struct rank<U[N]>
+: integral_constant<size_t, 1u + rank<U>::value> { };
+
+// partial specialization for unbounded array.
+template<class U>
+struct rank<U[]>
+: integral_constant<size_t, 1U + rank<U>::value> { };
+```
+
+### Some integral_constant conveniences
+-   A useful convenience alias:
+```cpp
+template<bool b>
+using bool_constant = integral_constant<bool, b>;
+```
+-   This then allows the following:
+```cpp
+using true_type = bool_constant<true>;
+using false_type = bool_constant<false>;
+```
