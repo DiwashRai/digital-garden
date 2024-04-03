@@ -40,8 +40,8 @@ etc...
 A program must contain exactly one definition of every non-inline variable or function. Multiple
 declarations are permitted.
 
-Howver, for an inline variable or inline function, a definition is required per translation unit.
-==The rules for inline variables annd functions also apply to templates==.
+However, for an inline variable or inline function, a definition is required per translation unit.
+==The rules for inline variables and functions also apply to templates==.
 
 > [!tip] Brief
 > Define templates in a header file and include the header wherever the template is
