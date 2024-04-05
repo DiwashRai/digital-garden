@@ -1,5 +1,5 @@
 ---
-title: "Modern Template Metaprogramming: A Compendium"
+title: "Modern Template Metaprogramming - A Compendium"
 tags:
 -   source
 -   infomedia

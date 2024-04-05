@@ -8,4 +8,4 @@ Topics: [[Software Engineering]]
 
 ---
 
-Did the [[CppCon 2014 - Modern Template Metaprogramming: A Compendium]] talk
+Did the [[CppCon 2014 - Modern Template Metaprogramming - A Compendium]] talk

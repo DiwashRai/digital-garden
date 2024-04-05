@@ -285,7 +285,7 @@ If we do not explicitly tell the compiler what type the template parameter is, w
 ==type inference==.
 
 **Type Inference**
--   Possible _PatameterType_ forms.
+-   Possible _ParameterType_ forms.
     1.  T
     2.  T*
     3.  T const*
