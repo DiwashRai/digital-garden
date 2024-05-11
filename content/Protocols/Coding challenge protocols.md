@@ -46,3 +46,19 @@ Reference:
     -   Edge list
         -   e.g. `std::vector<std::pair<int, int>> edgeList;`
     -   Incidence matrix
+
+
+## Dynamic programming problems
+### Multi dimensional dynamic programming problems
+Might be needed when:
+-   Another index state exists. e.g. `i` and `j` when traversing 2d array.
+-   Explicit numeric constraints given e.g. `you are only allowed to commit K transactions`
+-   Variables that have a status at a given state e.g. `true if holding key, false if not`
+-   Data like a bitmask is being used to store information e.g. `bitmask that represents XOR parity
+    of alphabetic characters`
+
+### Variations
+-   **House robber**: Order of elements matter. Picking one invalidates option to pick adjacent
+    houses.
+    -   Pick houses in order. Compare what is more optimal between picking previous house and
+        skipping current, or picking current and skipping previous.
