@@ -29,6 +29,7 @@ Reference:
         -   Adjacency list -> Disjoint set
         -   Words list -> Trie
     -   Creating something like a prefix sum array?
+-   **Is the question asking about pairs of paranthesis?**
 
 ## Implementing a dynamic programming algorithm
 -   What is the base case?
