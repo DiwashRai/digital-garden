@@ -29,6 +29,8 @@ Reference:
         -   Adjacency list -> Disjoint set
         -   Words list -> Trie
     -   Creating something like a prefix sum array?
+-   **Is a contiguous array or substring involved?**
+    -   Consider using a sliding window solution
 -   **Is the question asking about pairs of paranthesis?**
 
 ## Implementing a dynamic programming algorithm
