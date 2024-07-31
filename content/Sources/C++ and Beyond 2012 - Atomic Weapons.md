@@ -89,7 +89,7 @@ read and there is no read buffer, so you see stale values.
 
 # Ordering: What? Acquire and Release
 
-## Key general concept**: Transaction
+## Key general concept: Transaction
 -   Logical operation on related data that maintains an invariant.
 -   Atomic: all-or-nothing
 -   Consistent: reads a consistent state, or takes data from one consistent state to another
@@ -159,3 +159,65 @@ while(whose_turn != me) {}  // read whose_turn
 whose_turn = someone_else;  // write whose_turn
 ```
 
+## Controlling reordering 1): Use Mutexes
+-   Use mutex locks to protect code that reads/writes shared variables.
+-   Advantage:
+    -   Locks acquire/release induce ordering and nearly all reordering/invention/removal
+        weirdness vanishes
+-   Disadvantage:
+    -   Requries care on every use of the shared variables.
+        -   Deadlocks can happen i.e. two threads taking locks in opposite order.
+        -   Livelock can happen when locks try to "back off" (Chip 'n' Dale effect)
+
+## Controlling Reordering 2): std::atomic<>
+-   Special atomic types are automatically safe from reordering.
+```cpp
+atomic<int> flag1 = 0, flag2 = 0;
+// From Dekker's algorithm
+flag1 = 1;
+if (flag2 != 0) {...}
+```
+
+-   Advantage: Just tag the variable, not every place it's used.
+-   Disadvantage: Writing correct atomics code is harder than it looks
+
+**Ordered Atomics**
+-   Java and .NET = `volatile`. - **Always SC**
+-   C++ atomic<T> - **Default SC**
+-   Semantics and operations:
+    -   Each individual read/write is **atomic**. No torn reads, no locking required.
+    -   Each thread's reads/writes guaranteed to execute in order
+    -   ==Special ops: Compare-and-swap==. Conceptually atomic execution of:
+```cpp
+T atomic<T>::exchange(T desired) {
+    T oldval = this-> value;
+    this->value == desired;
+    return oldval;
+}
+
+bool atomic<T>::compare_exchange_strong(T& expected, T desired) {
+    if (this->value == expected) {
+        this->value = desired;
+        return true;
+    }
+    expected = this->value;
+    return false;
+}
+```
+
+**compare_exchange: Weak and Strong**
+-   In C++, compare-and-swap -> compare\_exchange\_<weak/strong>
+    -   Means: "Am I the one who gets to change val from expected to desired?"
+    -   Often written in loops -> ==CAS loop==
+
+-   weak vs strong: Weak allows spurious failures
+    -   Prefer `weak` when you're going to write a CAS loop anyway
+    -   Almost always want `strong` when doing a single check
+
+## Controlling Reordering 3): Fences and Ordered APIs
+-   Fences are explicit 'sandbars' against reordering.
+-   Disadvantages:
+    -   Nonpoartable. Different types on different processors
+    -   Tedious. Have to be written at every point of use
+    -   Error-prone. Hard to reason
+    -   Performance. Usually too heavy. _Standalone barriers are especially pessimized._
