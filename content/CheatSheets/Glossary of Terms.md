@@ -34,4 +34,9 @@ Reference:
 
 -   **Coroutine**
 
+-   **Context switch**: When the OS saves the CPU state and instruction pointer for the currently
+    running task, work outs which task to switch to and reloads the CPU state for that task.
+-   **Hardware concurrency**: When a machine is genuinely capable of running more than one task
+    in parallel by having more than one processor or cores or both.
+
 
