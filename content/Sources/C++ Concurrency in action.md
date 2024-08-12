@@ -175,6 +175,60 @@ public:
 
 ### Passing arguments to a thread function
 
+-   Arguments can be passed to a std::thread function like so:
+
+```cpp
+
+void f(int i, std::string& str);
+std::thread t(f, 3, "hello"); // note use of char const*
+
+```
+
+-   ==By default, arguments are copied into the thread objects internal storage by value==.
+-   This means that if you pass arguments as a pointer, the real variable being pointed to might
+    have gone out of scope.
+
+```cpp
+
+void f(int i, std:;string const& str);
+void oops(int some_param)
+{
+    char buffer[1024];
+    sprintf(buffer, "%d", some_param);
+    std::thread t(f, 3, buffer); // buffer passed in as char*
+    t.detach(); // detached and buffer will go out of scope
+}
+
+```
+-   This can be fixed by doing the following instead: `std::thread t(f, 3, std::string(buffer));`
+-   **A problem** that now happens due to the fact that std::thread takes parameters in by
+    value is that if the function takes in parameters by ==reference==, you cannot simply provide
+    a value hoping it takes it by reference.
+-   Since it is always by value, you need to wrap variables meant to be passed by reference in a
+    reference wrapper like so: `std::thread t(update_widget, w, std::ref(data));`
+-   Finally, there is another peculiar scenario with objects that can only be moved e.g.
+    `std::unique_ptr`.
+-   In this situation you just have to use `std::move`.
+
+```cpp
+
+void process_big_obj(std::unique_ptr<big_object>);
+std::unique_ptr<big_object> p(new big_object);
+std::thread t(process_big_obj, std::move(p));
+
+```
+
+### Transferring ownership of a thread
+
+-   `std::thread` can be moved into another `std::thread` object.
+-   However, if the target object already had an associated thread, `std::terminate` will be
+    called to be consistent with the destructor.
+-    One benefit of move support for `std::thread` is that you can create a 'scoped_thread' class
+    that joins automatically when going out of scope.
+-   ==This is now in C++20 as std::jthread==.
+
+### Choosing the number of threads at runtime
+
 ## 3 - Sharing data between threads
 **Chapter contents**
 
