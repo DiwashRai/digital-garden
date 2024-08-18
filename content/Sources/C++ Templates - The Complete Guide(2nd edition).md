@@ -29,7 +29,7 @@ Topics: [[Software Engineering]]
 
 ## 9 - Using templates in practice
 
-## 10 - Basic Tempalte Terminology
+## 10 - Basic Template Terminology
 
 ## 11 - Generic Libraries
 

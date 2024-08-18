@@ -24,7 +24,7 @@ C++ is better understood as a group of related sub-languages. These are:
 This is important to keep in mind as different sub-languages have different effective strategies and different conventions.
 
 
-### **Item 2:** Prefer consts, enums, and inlines to \#defines  
+### **Item 2:** Prefer consts, enums, and inlines to define directive  
 Rule could also be called "Prefer the compiler over the preprocessor".   
 
 ```cpp
@@ -684,7 +684,7 @@ This function creates the opportunity for two errors: not deleting the
 pointer and deleting it twice. This can be avoided by returning a smart
 pointer in the first place.  
 `std::shared_ptr<Investment> createInvestment();`  
-In fact shared_pt also make sit possible to get rid of other errors with the
+In fact shared_ptr also makes it possible to get rid of other errors with the
 ability to specify a custom release function (deleter). It can also get rid
 of the cross-DLL problem. This is a problem where an object is created
 using `new` in one DLL but is deleted in a different DLL. shared_ptr gets
@@ -1001,7 +1001,7 @@ that they require. It also allows for easy extensibility by the clients
 or by the writers in future.
 
 > [!abstract] Summary  
-> Prefer non-member non-friend fucntions to member functions. Doing so
+> Prefer non-member non-friend functions to member functions. Doing so
 > increases encapsulation, packaging flexibility, and functional
 > extensibility.
 
@@ -1161,7 +1161,7 @@ namespace std {
     }
 }
 ```
-The "template<>" at the begining of the fucntion says that this is a *total
+The "template<>" at the begining of the function says that this is a *total
 template specialisation* for std::swap and the "< Widget >" after the name
 of the function says that the specialisation is for when T is Widget.
 
@@ -1171,7 +1171,7 @@ types.
 
 The above code won't compile due to `pImpl` being private. We could make
 the specialisation a friend, but the convention is to declare a public
-member function calle dswap that does the actual swapping, then
+member function called swap that does the actual swapping, then
 specialise the std::swap to call the member function.
 
 ```cpp
@@ -1214,7 +1214,7 @@ specialise a function template, the usual approach is to simply use an
 overload.
 ```cpp
 namespace std {
-    tempalte<typename T>
+    template<typename T>
     void swap(Widget<T>& a, Widget<T>& b)
     {a.swap(b);}
 }
@@ -2581,7 +2581,7 @@ parameter and the entity's return type can be converted to int.
 This is similar to using function pointers but with a staggering amount
 more flexibility.
 
-#### The "Classic" Stretegy Pattern
+#### The "Classic" Strategy Pattern
 For a more design pattern friendly approach instead of a 'C++ coolness'
 approach you can have `GameCharacter` be the base class for `EvilBadGuy`
 and `EyeCandyCharacter`. `HealthCalcFunc` would then be the root of
@@ -3377,7 +3377,7 @@ template<typename T, std::size_t n>
 class SquareMatrix {
 public:
     ...
-    void inert();
+    void invert();
 };
 ...
 SquareMatrix<double, 5> sm1;
@@ -3404,7 +3404,7 @@ protected:
 template<typename T, std::size_t n>
 class SquareMatrix: private SquareMatrixBase<T> {
 private:
-    using SquareMatrixBas<T>::invert;
+    using SquareMatrixBase<T>::invert;
 public:
     ...
     void invert() {invert(n);}
@@ -3510,7 +3510,7 @@ in a three-level hierarchy.
 
 With smart pointers the code might look like this:
 ```cpp
-tempalte<typename T>
+template<typename T>
 class SmartPtr {
 public:
     explicit SmartPtr(T *realPtr);
@@ -3704,7 +3704,7 @@ nest information about a type as you can't do this with pointers.
 The standard technique is to put it into a template and one or more
 specialisations for that template.
 ```cpp
-tempalte<typename iterT>
+template<typename iterT>
 struct iterator_traits;
 ```
 
@@ -3740,7 +3740,7 @@ second part of implementing iterator_traits is to create a `partial template spe
 for pointer types. Pointers act as random access iterators so that's what
 we'll use.
 ```cpp
-tempalte<typename T>
+template<typename T>
 struct iterator_traits<T*>
 {
     typedef random_access_iterator_tag iterator_category;
