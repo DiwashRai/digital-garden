@@ -1,9 +1,8 @@
-
 ---
-title: "C++ Concurrency in action (2nd edition)"
+title: C++ Concurrency in action (2nd edition)
 tags:
--   source
--   textbook
+  - source
+  - book
 ---
 Author: [[Anthony Williams]]  
 Topics: [[Software Engineering]]  

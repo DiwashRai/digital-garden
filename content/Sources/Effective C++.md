@@ -2,7 +2,7 @@
 title: Effective C++
 tags:
   - source
-  - textbook
+  - book
 enableToc: true
 openTOC: true
 ---
