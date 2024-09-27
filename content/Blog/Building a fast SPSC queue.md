@@ -160,6 +160,7 @@ public:
         if (empty(tail, head)) return false;
 
         item = data_[head % SIZE];
+        data_[head % SIZE].~T();
         head_.store(head + 1);
         return true;
     }
@@ -232,13 +233,14 @@ bool try_pop(T& item) {
     if (empty(tail, head)) return false;
 
     item = data_[head % SIZE];
+    data_[head % SIZE].~T();
     head_.store(head + 1, std::memory_order::release);
     return true;
 }
 
 ```
 
-By just specifying the memory order we gone from about 40M Msg/s to about 146M Msg/s. That is
+By just specifying the memory order we have gone from about 40M Msg/s to about 146M Msg/s. That is
 about 3.65x. Not bad.
 
 ```sh
@@ -296,6 +298,7 @@ class spsc {
         }
 
         item = data_[head % SIZE];
+        data_[head % SIZE].~T();
         head_.store(head + 1, std::memory_order::release);
         return true;
     }
@@ -342,9 +345,9 @@ Unfortunately, we actually get a performance regression.
 
 ```
 
-But why? Adding the cached head and tail has resulted in slightly less throughput. The answer is
-false sharing. Although the algorithm has improved and logically _should_ give us more performance
-we are encountering more false sharing which loses us any of the benefits.
+But why has adding the cached head and tail indexes resulted in slightly less throughput. The
+answer is false sharing. Although the algorithm has improved and logically _should_ give us more
+performance we are encountering more false sharing which loses us any of the benefits.
 
 ### Prevent false sharing of indexes
 The way to unlock the performance our caching should give us is to prevent the false sharing of
@@ -406,9 +409,192 @@ version without cached head and tail indexes.
 
 ## Exploring other factors that affect performance
 
-### Dynamic ring buffer allocation instead of static
+### Dynamic allocation of ring buffer(`data_`)
+Something you might have noticed in the current SPSC implementation is that the ring buffer is
+allocated inline. This might be less than ideal as stack memory is more limited than heap. Lets
+change it to heap allocation and see what impact it has on performance.
+
+The code changes will just be for the constructor/destructor and `data_`.
+
+```cpp
+
+template <typename T, unsigned SIZE, T NIL>
+class spsc {
+    //...
+
+    spsc() : data_(static_cast<T*>(operator new[](sizeof(T) * SIZE))){};
+    ~spsc() {
+        auto head = head_.load(std::memory_order::relaxed);
+        auto tail = tail_.load(std::memory_order::relaxed);
+        while (head < tail) {
+            data_[head % SIZE].~T();
+            head++;
+        }
+        operator delete[](data_);
+    }
+    // ...
+
+    T* data_;
+
+    //...
+};
+
+```
+
+It appears there is a bit of a performance hit.
+
+```sh
+
+----------- SPSC Benchmarks -----------
+#### Cached indexes no false sharing
+-> warmup:  928,970,061 msg/s
+->    avg:  931,109,816 msg/s - min:  924,338,326 msg/s - max:  934,805,221 msg/s
+
+#### Ring buffer on heap
+-> warmup:  650,262,265 msg/s
+->    avg:  653,318,406 msg/s - min:  640,931,752 msg/s - max:  663,174,830 msg/s
+
+```
 
 ### Ring buffer size not power of 2
+Another thing I was making sure to do was to ensure that the size of the ring buffer was a power of
+2. This allows the cpu to do extremely efficient modulo calculations. I was using 16384. Lets see
+what impact there is if I use 16383.
+
+```sh
+
+----------- SPSC Benchmarks -----------
+#### Cached indexes no false sharing
+-> warmup:  928,453,757 msg/s
+->    avg:  929,905,352 msg/s - min:  919,964,232 msg/s - max:  943,987,632 msg/s
+
+#### non power of 2 size(16383)
+-> warmup:  120,781,702 msg/s
+->    avg:  120,861,560 msg/s - min:  120,536,364 msg/s - max:  121,091,971 msg/s
+
+```
+
+That is a huge difference. Much more than I was expecting. The size was the only thing I changed.
 
 ### Producer and consumer thread on different cores(No shared L1 and L2 cache)
+Finally, something that I encountered that you might find interesting. I mentioned that it was
+important to be able to control the thread affinity for the producer and consumer. This was
+initially to just ensure they are on different logical processors, but I realised which core they
+are in also affects it.
+
+In the examples so far I have had them on the same core. Lets see how that compares when they are
+on different cores as well.
+
+**Same core results**
+```sh
+----------- SPSC Benchmarks -----------
+#### MutexDequeQueue
+-> warmup:   10,676,529 msg/s
+->    avg:   10,869,514 msg/s - min:   10,678,222 msg/s - max:   11,000,244 msg/s
+
+#### BoostLockFreeSPSCQueue
+-> warmup:  153,236,955 msg/s
+->    avg:  152,263,445 msg/s - min:  150,858,149 msg/s - max:  153,045,237 msg/s
+
+#### RigtorpSPSCQueue
+-> warmup:  265,689,680 msg/s
+->    avg:  257,951,695 msg/s - min:  252,280,202 msg/s - max:  264,932,018 msg/s
+
+#### Naive implementation
+-> warmup:   41,323,935 msg/s
+->    avg:   41,059,814 msg/s - min:   40,858,005 msg/s - max:   41,272,383 msg/s
+
+#### relaxed/non seq_cst memory ordering
+-> warmup:  152,214,800 msg/s
+->    avg:  149,939,111 msg/s - min:  148,905,470 msg/s - max:  151,015,420 msg/s
+
+#### Cached head and tail
+-> warmup:  142,144,522 msg/s
+->    avg:  136,316,108 msg/s - min:  132,343,220 msg/s - max:  140,294,058 msg/s
+
+#### Cached indexes no false sharing
+-> warmup:  917,054,494 msg/s
+->    avg:  924,980,874 msg/s - min:  922,505,895 msg/s - max:  926,554,073 msg/s
+
+#### Ring buffer on heap
+-> warmup:  722,118,276 msg/s
+->    avg:  691,133,390 msg/s - min:  673,967,947 msg/s - max:  713,941,116 msg/s
+```
+
+**Different cores**
+```sh
+#### MutexDequeQueue
+-> warmup:    8,988,148 msg/s
+->    avg:    8,997,818 msg/s - min:    8,929,417 msg/s - max:    9,034,206 msg/s
+
+#### BoostLockFreeSPSCQueue
+-> warmup:  253,955,478 msg/s
+->    avg:  268,857,432 msg/s - min:  263,351,455 msg/s - max:  275,368,918 msg/s
+
+#### RigtorpSPSCQueue
+-> warmup:  245,531,005 msg/s
+->    avg:  229,542,215 msg/s - min:  223,043,522 msg/s - max:  237,537,232 msg/s
+
+#### Naive implementation
+-> warmup:   12,682,216 msg/s
+->    avg:   12,871,031 msg/s - min:   12,728,863 msg/s - max:   12,973,382 msg/s
+
+#### relaxed/non seq_cst memory ordering
+-> warmup:   38,521,366 msg/s
+->    avg:   38,797,966 msg/s - min:   38,597,880 msg/s - max:   39,059,919 msg/s
+
+#### Cached head and tail
+-> warmup:   48,676,369 msg/s
+->    avg:   47,132,637 msg/s - min:   46,682,786 msg/s - max:   47,436,396 msg/s
+
+#### Cached indexes no false sharing
+-> warmup:   91,007,310 msg/s
+->    avg:   93,296,165 msg/s - min:   91,399,658 msg/s - max:   95,333,119 msg/s
+
+#### Ring buffer on heap
+-> warmup:   76,030,537 msg/s
+->    avg:   77,593,455 msg/s - min:   76,895,219 msg/s - max:   78,314,395 msg/s
+
+```
+
+Now this has much more interesting results. The boost implementation actually seems to improve and
+is the only one that does so. The mutex queue and `rigtorp::SPSCQueue` decrease slightly. The
+performance of my SPSC queues seems to absolutely collapse. I am unsure of why this behaviour
+differs currently. Would have to look more deeply into the other implementations most likely.
+
+## Comparisons with even more lock free SPSC queues
+Alright for the final section, I will just compare the performance of the fastest version I created
+which was the one with cached indexes with no false sharing and the ring buffer allocated inline
+in the SPSC itself.
+
+Here are the SPSC queues I will be adding to the benchmark:
+-   MoodyCamel ReaderWriterQueue
+-   atomic_queue
+    -   Standard version
+    -   'Optimist' version
+
+```sh
+
+----------- SPSC Benchmarks -----------
+#### BoostLockFreeSPSCQueue
+-> warmup:  138,471,398 msg/s
+->    avg:  153,086,148 msg/s - min:  149,815,831 msg/s - max:  155,085,516 msg/s
+
+#### RigtorpSPSCQueue
+-> warmup:  276,120,388 msg/s
+->    avg:  278,086,017 msg/s - min:  273,506,056 msg/s - max:  281,495,635 msg/s
+
+#### Cached indexes no false sharing
+-> warmup:  838,600,107 msg/s
+->    avg:  863,294,987 msg/s - min:  835,219,355 msg/s - max:  898,570,531 msg/s
+
+#### Atomic queue(SPSC mode)
+-> warmup:  135,829,030 msg/s
+->    avg:  133,966,819 msg/s - min:  130,347,675 msg/s - max:  135,858,297 msg/s
+
+#### Optimist Atomic queue(SPSC mode)
+-> warmup:  927,389,963 msg/s
+->    avg:  917,135,017 msg/s - min:  891,673,529 msg/s - max:  934,352,780 msg/s
+
+```
 
